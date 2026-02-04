@@ -1,5 +1,5 @@
 diff --git a/codex-rs/tui/src/collaboration_modes.rs b/codex-rs/tui/src/collaboration_modes.rs
-index 4e79dfc..cfe20ce 100644
+index e799ea9c5..08fd711ab 100644
 --- a/codex-rs/tui/src/collaboration_modes.rs
 +++ b/codex-rs/tui/src/collaboration_modes.rs
 @@ -3,7 +3,10 @@ use codex_protocol::config_types::CollaborationModeMask;
@@ -12,3 +12,5 @@ index 4e79dfc..cfe20ce 100644
 +        ModeKind::Plan | ModeKind::Code | ModeKind::PairProgramming | ModeKind::Execute
 +    )
  }
+ 
+ fn filtered_presets(models_manager: &ModelsManager) -> Vec<CollaborationModeMask> {
