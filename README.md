@@ -5,6 +5,15 @@ Re-enables the hidden **Pair Programming** + **Execute** collaboration modes in 
 **macOS only.**  
 **Tested with `@openai/codex@0.94.0` (Codex CLI `0.94.0`).**
 
+## Quick start
+
+```bash
+git clone https://github.com/lueluelue2006/codex-enable-execute-pair-macos.git
+cd codex-enable-execute-pair-macos
+npm i -g @openai/codex@0.94.0
+./bin/codex-repatch-modes
+```
+
 ## What this does
 
 - Clones `openai/codex` into `~/.codex/patch-build/openai-codex` (reused on later runs)
