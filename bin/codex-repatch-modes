@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+die() {
+  echo "error: $*" >&2
+  exit 1
+}
+
+usage() {
+  cat <<'EOF'
+Rebuild @openai/codex with a small TUI patch to re-enable the hidden
+"Pair Programming" + "Execute" collaboration modes, then replace the global
+npm vendor binary.
+
+macOS only. Tested with @openai/codex 0.94.0.
+
+Usage:
+  ./bin/codex-repatch-modes [--version <x.y.z[-alpha.n]>]
+
+Notes:
+  - If --version is omitted, the version is read from `codex --version`.
+  - This script overwrites the vendor binary inside your global npm install of
+    @openai/codex, but makes an on-disk backup first.
+EOF
+}
+
+VERSION=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --version)
+      VERSION="${2:-}"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      die "unknown argument: $1"
+      ;;
+  esac
+done
+
+os="$(uname -s)"
+[[ "$os" == "Darwin" ]] || die "macOS only (got: $os)"
+
+command -v git >/dev/null 2>&1 || die "missing dependency: git"
+command -v cargo >/dev/null 2>&1 || die "missing dependency: cargo (Rust toolchain)"
+command -v npm >/dev/null 2>&1 || die "missing dependency: npm (Node.js)"
+
+if [[ -z "$VERSION" ]]; then
+  command -v codex >/dev/null 2>&1 || die "codex not found; pass --version to build a specific tag"
+  VERSION="$(codex --version | awk '{print $2}')"
+fi
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+PATCH_FILE="${CODEX_PATCH_FILE:-$REPO_ROOT/patches/openai-codex-enable-execute-pair-tui.patch}"
+BUILD_DIR="${CODEX_PATCH_BUILD_DIR:-$HOME/.codex/patch-build/openai-codex}"
+
+[[ -f "$PATCH_FILE" ]] || die "patch file not found: $PATCH_FILE"
+
+TAG="rust-v$VERSION"
+
+mkdir -p "$(dirname "$BUILD_DIR")"
+if [[ ! -d "$BUILD_DIR/.git" ]]; then
+  git clone "https://github.com/openai/codex.git" "$BUILD_DIR"
+fi
+
+cd "$BUILD_DIR"
+git fetch --tags --force --prune origin
+git checkout -f "$TAG" || die "tag not found: $TAG"
+git reset --hard
+
+git apply "$PATCH_FILE"
+
+cd codex-rs
+if command -v just >/dev/null 2>&1; then
+  just fmt
+else
+  cargo fmt
+fi
+cargo build --release -p codex-cli --bin codex
+
+PATCHED_BIN="$BUILD_DIR/codex-rs/target/release/codex"
+[[ -x "$PATCHED_BIN" ]] || die "build output missing: $PATCHED_BIN"
+
+NPM_ROOT="$(npm root -g)"
+[[ -d "$NPM_ROOT" ]] || die "npm root not found: $NPM_ROOT"
+
+arch="$(uname -m)"
+case "$arch" in
+  arm64|aarch64) target="aarch64-apple-darwin" ;;
+  x86_64|amd64) target="x86_64-apple-darwin" ;;
+  *) die "unsupported macOS arch: $arch" ;;
+esac
+
+VENDOR_BIN="$NPM_ROOT/@openai/codex/vendor/$target/codex/codex"
+[[ -f "$VENDOR_BIN" ]] || die "vendor binary not found: $VENDOR_BIN"
+
+ts="$(date +%Y%m%d-%H%M%S)"
+cp -a "$VENDOR_BIN" "$VENDOR_BIN.orig-$ts"
+cp -a "$PATCHED_BIN" "$VENDOR_BIN"
+
+echo "ok: installed patched codex binary"
+echo "  version: $VERSION ($TAG)"
+echo "  vendor:  $VENDOR_BIN"
+echo "  backup:  $VENDOR_BIN.orig-$ts"
