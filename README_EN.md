@@ -55,3 +55,15 @@ Optional:
 ## Disclaimer
 
 This is an unofficial patch. Use at your own risk.
+
+## Appendix: `code.md` vs `execute.md` (0.94.0)
+
+These are upstream Codex templates used for **collaboration mode presets** (tag: `rust-v0.94.0`):
+
+- `code.md`: 1 line / 26 bytes (only `you are now in code mode.`)
+- `execute.md`: 45 lines / 3900 bytes (detailed “assumptions-first execution”, progress reporting, etc.)
+
+Links:
+
+- `code.md`: https://github.com/openai/codex/blob/rust-v0.94.0/codex-rs/core/templates/collaboration_mode/code.md
+- `execute.md`: https://github.com/openai/codex/blob/rust-v0.94.0/codex-rs/core/templates/collaboration_mode/execute.md

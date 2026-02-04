@@ -59,3 +59,15 @@ npm i -g @openai/codex@0.94.0
 ## 免责声明
 
 这是非官方补丁，风险自负。
+
+## 附录：`code.md` vs `execute.md`（0.94.0）
+
+这是 Codex 上游用于 **collaboration mode presets** 的模板文件（tag：`rust-v0.94.0`）：
+
+- `code.md`：1 行 / 26 bytes（只写 `you are now in code mode.`）
+- `execute.md`：45 行 / 3900 bytes（详细说明 “Assumptions-first execution / Reporting progress / Executing”等）
+
+链接：
+
+- `code.md`：https://github.com/openai/codex/blob/rust-v0.94.0/codex-rs/core/templates/collaboration_mode/code.md
+- `execute.md`：https://github.com/openai/codex/blob/rust-v0.94.0/codex-rs/core/templates/collaboration_mode/execute.md
