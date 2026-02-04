@@ -6,8 +6,6 @@ English version: [README_EN.md](README_EN.md)
 
 通过对上游 Rust 二进制打一个很小的补丁并重新编译，然后替换全局 npm 安装里的 vendor 二进制，让 **Codex CLI 的 TUI** 恢复显示并可切换隐藏的 **Pair Programming** + **Execute** 协作模式。
 
-另外：本补丁会把上游 **Execute** 模式的默认 `reasoning_effort` 从 `high` 调整为 `medium`（避免默认高推理）。
-
 **仅支持 macOS。**  
 **已在 `@openai/codex@0.94.0`（Codex CLI `0.94.0`）验证可用。**
 

@@ -2,8 +2,6 @@
 
 Re-enables the hidden **Pair Programming** + **Execute** collaboration modes in the **Codex CLI TUI** by rebuilding the upstream Rust binary with a tiny patch, then replacing the global npm vendor binary.
 
-Also: this patch changes the upstream default `reasoning_effort` for **Execute** mode from `high` to `medium` (to avoid a high reasoning default).
-
 **macOS only.**  
 **Tested with `@openai/codex@0.94.0` (Codex CLI `0.94.0`).**
 
