@@ -46,6 +46,7 @@ os="$(uname -s)"
 
 command -v git >/dev/null 2>&1 || die "missing dependency: git"
 command -v cargo >/dev/null 2>&1 || die "missing dependency: cargo (Rust toolchain)"
+command -v node >/dev/null 2>&1 || die "missing dependency: node (Node.js)"
 command -v npm >/dev/null 2>&1 || die "missing dependency: npm (Node.js)"
 
 if [[ -z "$VERSION" ]]; then
@@ -85,9 +86,6 @@ cargo build --release -p codex-cli --bin codex
 PATCHED_BIN="$BUILD_DIR/codex-rs/target/release/codex"
 [[ -x "$PATCHED_BIN" ]] || die "build output missing: $PATCHED_BIN"
 
-NPM_ROOT="$(npm root -g)"
-[[ -d "$NPM_ROOT" ]] || die "npm root not found: $NPM_ROOT"
-
 arch="$(uname -m)"
 case "$arch" in
   arm64|aarch64) target="aarch64-apple-darwin" ;;
@@ -95,7 +93,27 @@ case "$arch" in
   *) die "unsupported macOS arch: $arch" ;;
 esac
 
-VENDOR_BIN="$NPM_ROOT/@openai/codex/vendor/$target/codex/codex"
+VENDOR_BIN=""
+
+# Prefer resolving the vendor path from the currently active `codex` shim so we don't
+# accidentally use a different global npm root (e.g. Homebrew npm vs fnm npm).
+if command -v codex >/dev/null 2>&1; then
+  codex_shim="$(command -v codex)"
+  codex_js_real="$(node -e 'console.log(require("fs").realpathSync(process.argv[1]))' "$codex_shim" 2>/dev/null || true)"
+  if [[ -n "$codex_js_real" ]]; then
+    codex_pkg_root="$(cd -- "$(dirname -- "$codex_js_real")/.." && pwd)"
+    candidate="$codex_pkg_root/vendor/$target/codex/codex"
+    if [[ -f "$candidate" ]]; then
+      VENDOR_BIN="$candidate"
+    fi
+  fi
+fi
+
+if [[ -z "$VENDOR_BIN" ]]; then
+  NPM_ROOT="$(npm root -g)"
+  [[ -d "$NPM_ROOT" ]] || die "npm root not found: $NPM_ROOT"
+  VENDOR_BIN="$NPM_ROOT/@openai/codex/vendor/$target/codex/codex"
+fi
 [[ -f "$VENDOR_BIN" ]] || die "vendor binary not found: $VENDOR_BIN"
 
 ts="$(date +%Y%m%d-%H%M%S)"
