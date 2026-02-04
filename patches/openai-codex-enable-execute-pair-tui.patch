@@ -1,3 +1,16 @@
+diff --git a/codex-rs/core/src/models_manager/collaboration_mode_presets.rs b/codex-rs/core/src/models_manager/collaboration_mode_presets.rs
+index 83059b912..1e2a536a2 100644
+--- a/codex-rs/core/src/models_manager/collaboration_mode_presets.rs
++++ b/codex-rs/core/src/models_manager/collaboration_mode_presets.rs
+@@ -58,7 +58,7 @@ fn execute_preset() -> CollaborationModeMask {
+         name: "Execute".to_string(),
+         mode: Some(ModeKind::Execute),
+         model: None,
+-        reasoning_effort: Some(Some(ReasoningEffort::High)),
++        reasoning_effort: Some(Some(ReasoningEffort::Medium)),
+         developer_instructions: Some(Some(COLLABORATION_MODE_EXECUTE.to_string())),
+     }
+ }
 diff --git a/codex-rs/tui/src/collaboration_modes.rs b/codex-rs/tui/src/collaboration_modes.rs
 index e799ea9c5..08fd711ab 100644
 --- a/codex-rs/tui/src/collaboration_modes.rs
