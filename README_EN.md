@@ -2,7 +2,7 @@
 
 Re-enables the hidden **Pair Programming** + **Execute** collaboration modes in the **Codex CLI TUI** by rebuilding the upstream Rust binary with a tiny patch, then replacing the global npm vendor binary.
 
-Also: this patch changes the upstream default `reasoning_effort` for **Execute** mode from `high` to `medium` (to avoid a high reasoning default).
+Also: this patch sets the default `reasoning_effort` for all four collaboration modes (Plan / Code / Pair / Execute) to **`xhigh`**.
 
 ⚠️ On macOS 15 (Sequoia), overwriting the vendor `codex` binary in-place (e.g. with `cp`) can result in `killed` (exit=137). This script installs via “temp file → atomic `mv`”, then runs a `--version` sanity check and auto-rolls back on failure.
 

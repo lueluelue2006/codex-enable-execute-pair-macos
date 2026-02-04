@@ -1,13 +1,40 @@
 diff --git a/codex-rs/core/src/models_manager/collaboration_mode_presets.rs b/codex-rs/core/src/models_manager/collaboration_mode_presets.rs
-index 83059b9..1e2a536 100644
+index 83059b9..d9a43e5 100644
 --- a/codex-rs/core/src/models_manager/collaboration_mode_presets.rs
 +++ b/codex-rs/core/src/models_manager/collaboration_mode_presets.rs
+@@ -28,7 +28,7 @@ fn plan_preset() -> CollaborationModeMask {
+         name: "Plan".to_string(),
+         mode: Some(ModeKind::Plan),
+         model: None,
+-        reasoning_effort: Some(Some(ReasoningEffort::Medium)),
++        reasoning_effort: Some(Some(ReasoningEffort::XHigh)),
+         developer_instructions: Some(Some(COLLABORATION_MODE_PLAN.to_string())),
+     }
+ }
+@@ -38,7 +38,7 @@ fn code_preset() -> CollaborationModeMask {
+         name: "Code".to_string(),
+         mode: Some(ModeKind::Code),
+         model: None,
+-        reasoning_effort: None,
++        reasoning_effort: Some(Some(ReasoningEffort::XHigh)),
+         developer_instructions: Some(Some(COLLABORATION_MODE_CODE.to_string())),
+     }
+ }
+@@ -48,7 +48,7 @@ fn pair_programming_preset() -> CollaborationModeMask {
+         name: "Pair Programming".to_string(),
+         mode: Some(ModeKind::PairProgramming),
+         model: None,
+-        reasoning_effort: Some(Some(ReasoningEffort::Medium)),
++        reasoning_effort: Some(Some(ReasoningEffort::XHigh)),
+         developer_instructions: Some(Some(COLLABORATION_MODE_PAIR_PROGRAMMING.to_string())),
+     }
+ }
 @@ -58,7 +58,7 @@ fn execute_preset() -> CollaborationModeMask {
          name: "Execute".to_string(),
          mode: Some(ModeKind::Execute),
          model: None,
 -        reasoning_effort: Some(Some(ReasoningEffort::High)),
-+        reasoning_effort: Some(Some(ReasoningEffort::Medium)),
++        reasoning_effort: Some(Some(ReasoningEffort::XHigh)),
          developer_instructions: Some(Some(COLLABORATION_MODE_EXECUTE.to_string())),
      }
  }
