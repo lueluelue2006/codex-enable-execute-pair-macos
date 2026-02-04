@@ -12,7 +12,7 @@ Rebuild @openai/codex with a small TUI patch to re-enable the hidden
 "Pair Programming" + "Execute" collaboration modes, then replace the global
 npm vendor binary.
 
-macOS only. Tested with @openai/codex 0.94.0.
+macOS only. Supports @openai/codex <= 0.94.x (tested with 0.94.0).
 
 Usage:
   ./bin/codex-repatch-modes [--version <x.y.z[-alpha.n]>]
@@ -52,6 +52,17 @@ command -v npm >/dev/null 2>&1 || die "missing dependency: npm (Node.js)"
 if [[ -z "$VERSION" ]]; then
   command -v codex >/dev/null 2>&1 || die "codex not found; pass --version to build a specific tag"
   VERSION="$(codex --version | awk '{print $2}')"
+fi
+
+if [[ "$VERSION" =~ ^([0-9]+)\\.([0-9]+)\\. ]]; then
+  major="${BASH_REMATCH[1]}"
+  minor="${BASH_REMATCH[2]}"
+else
+  die "could not parse version: $VERSION"
+fi
+
+if (( major != 0 || minor > 94 )); then
+  die "unsupported @openai/codex version: $VERSION (this repo supports <= 0.94.x only; upstream 0.95+ locks Pair/Execute)"
 fi
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"

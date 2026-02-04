@@ -1,5 +1,8 @@
 # codex-enable-execute-pair-macos
 
+⚠️ **版本要求：仅支持 `@openai/codex <= 0.94.x`。**  
+`0.95+` 上游已把协作模式收敛为 `Plan/Default` 并锁定隐藏枚举，当前仓库补丁无法应用（Pair/Execute 无法通过 app-server 正常暴露）。
+
 注意前置条件（缺了会直接报错）：`git`、Rust（`cargo`/`rustfmt`）、Xcode Command Line Tools、Node + `npm`。首次运行会比较久，因为需要下载 Rust 依赖。成功标志是脚本最后输出：`ok: installed patched codex binary`。
 
 English version: [README_EN.md](README_EN.md)
@@ -18,7 +21,7 @@ English version: [README_EN.md](README_EN.md)
 ```bash
 git clone https://github.com/lueluelue2006/codex-enable-execute-pair-macos.git
 cd codex-enable-execute-pair-macos
-npm i -g @openai/codex@0.94.0
+npm i -g @openai/codex@0.94.0 # 0.95+ 不支持
 ./bin/codex-repatch-modes
 ```
 

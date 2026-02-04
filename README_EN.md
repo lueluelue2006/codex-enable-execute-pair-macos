@@ -1,5 +1,8 @@
 # codex-enable-execute-pair-macos
 
+⚠️ **Version requirement: only supports `@openai/codex <= 0.94.x`.**  
+In `0.95+`, upstream collapses collaboration modes to `Plan/Default` and locks the hidden enum variants, so this repo’s patch does not apply (Pair/Execute cannot be exposed via the app-server properly).
+
 Re-enables the hidden **Pair Programming** + **Execute** collaboration modes in the **Codex CLI TUI** by rebuilding the upstream Rust binary with a tiny patch, then replacing the global npm vendor binary.
 
 Also: this patch sets the default `reasoning_effort` for all four collaboration modes (Plan / Code / Pair / Execute) to **`xhigh`**.
@@ -14,7 +17,7 @@ Also: this patch sets the default `reasoning_effort` for all four collaboration 
 ```bash
 git clone https://github.com/lueluelue2006/codex-enable-execute-pair-macos.git
 cd codex-enable-execute-pair-macos
-npm i -g @openai/codex@0.94.0
+npm i -g @openai/codex@0.94.0 # 0.95+ not supported
 ./bin/codex-repatch-modes
 ```
 
