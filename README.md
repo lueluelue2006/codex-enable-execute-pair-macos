@@ -1,11 +1,15 @@
 # codex-enable-execute-pair-macos
 
-Re-enables the hidden **Pair Programming** + **Execute** collaboration modes in the **Codex CLI TUI** by rebuilding the upstream Rust binary with a tiny patch, then replacing the global npm vendor binary.
+注意前置条件（缺了会直接报错）：`git`、Rust（`cargo`/`rustfmt`）、Xcode Command Line Tools、Node + `npm`。首次运行会比较久，因为需要下载 Rust 依赖。成功标志是脚本最后输出：`ok: installed patched codex binary`。
 
-**macOS only.**  
-**Tested with `@openai/codex@0.94.0` (Codex CLI `0.94.0`).**
+English version: [README_EN.md](README_EN.md)
 
-## Quick start
+通过对上游 Rust 二进制打一个很小的补丁并重新编译，然后替换全局 npm 安装里的 vendor 二进制，让 **Codex CLI 的 TUI** 恢复显示并可切换隐藏的 **Pair Programming** + **Execute** 协作模式。
+
+**仅支持 macOS。**  
+**已在 `@openai/codex@0.94.0`（Codex CLI `0.94.0`）验证可用。**
+
+## 快速开始
 
 ```bash
 git clone https://github.com/lueluelue2006/codex-enable-execute-pair-macos.git
@@ -14,44 +18,44 @@ npm i -g @openai/codex@0.94.0
 ./bin/codex-repatch-modes
 ```
 
-## What this does
+## 它做了什么
 
-- Clones `openai/codex` into `~/.codex/patch-build/openai-codex` (reused on later runs)
-- Checks out the tag `rust-v<version>`
-- Applies `patches/openai-codex-enable-execute-pair-tui.patch`
-- Builds the release binary (`cargo build --release -p codex-cli --bin codex`)
-- Replaces the vendor binary inside your global npm install of `@openai/codex` (with a backup)
+- 把 `openai/codex` 克隆到 `~/.codex/patch-build/openai-codex`（后续复用）
+- 切到 tag：`rust-v<version>`
+- 应用补丁：`patches/openai-codex-enable-execute-pair-tui.patch`
+- 编译 release 二进制：`cargo build --release -p codex-cli --bin codex`
+- 替换全局 npm 安装的 `@openai/codex` vendor 二进制（会先备份）
 
-## Requirements (macOS)
+## 依赖（macOS）
 
-- Node.js + npm
-- Global install of Codex CLI:
+- Node.js + `npm`
+- 全局安装 Codex CLI：
   - `npm i -g @openai/codex@0.94.0`
-- Git
-- Rust toolchain (cargo + rustfmt)
-- Xcode Command Line Tools (for the native toolchain used by Rust builds)
+- `git`
+- Rust 工具链（`cargo` + `rustfmt`）
+- Xcode Command Line Tools（Rust 编译会用到本机工具链）
 
-## Usage
+## 用法
 
-From this repo root:
+在本仓库根目录执行：
 
 ```bash
 ./bin/codex-repatch-modes
 ```
 
-Optional:
+可选（手动指定版本）：
 
 ```bash
 ./bin/codex-repatch-modes --version 0.94.0
 ```
 
-## Safety notes
+## 安全说明
 
-- This **overwrites** a file under your global npm install:
+- 它会**覆盖**你全局 npm 安装目录下的一个文件：
   - `$(npm root -g)/@openai/codex/vendor/<target>/codex/codex`
-- A backup is created next to it (`codex.orig-<timestamp>`).
-- No session data under `~/.codex/sessions` is modified.
+- 会在同目录自动生成备份：`codex.orig-<timestamp>`
+- 不会修改 `~/.codex/sessions` 下的历史会话数据
 
-## Disclaimer
+## 免责声明
 
-This is an unofficial patch. Use at your own risk.
+这是非官方补丁，风险自负。
